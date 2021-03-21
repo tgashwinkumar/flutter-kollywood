@@ -19,15 +19,15 @@ class BoardBlock extends StatelessWidget {
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
             colors: [
-              Colors.pink[300],
-              Colors.pink[400],
+              Colors.grey[50],
+              Colors.grey[100],
             ]
           ),
           boxShadow: [
             BoxShadow(
               blurRadius: 10.0,
-              color: Colors.pink.withOpacity(.5),
-              offset: Offset(3.0, 3.0),
+              color: Colors.black.withOpacity(.6),
+              offset: Offset(2.0, 2.0),
             )
           ]
         ),
@@ -37,7 +37,7 @@ class BoardBlock extends StatelessWidget {
             Text(
               label,
               style: TextStyle(
-                color: Colors.black54,
+                color: Colors.black38,
                 fontSize: 20,
               ),
             ),
@@ -46,6 +46,7 @@ class BoardBlock extends StatelessWidget {
               style: TextStyle(
                 color: Colors.black,
                 fontSize: 30,
+                fontWeight: FontWeight.bold,
               ),
             ),
           ],

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:kollywood_app/pages/answer.dart';
 import 'package:kollywood_app/pages/question.dart';
 
 void main() {
@@ -12,7 +13,15 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       initialRoute: '/',
       routes: {
-        '/': (context) => Question(lobbyCode: 'AAAAAA',),
+        '/': (context) => Answer(
+              lobbyCode: 'AAAAAA',
+              questionSet: {
+                'hero':'vijay',
+                'heroine':'malavika',
+                'movie':'master',
+                'song':'andha kanna',
+              },
+            )
       },
     );
   }

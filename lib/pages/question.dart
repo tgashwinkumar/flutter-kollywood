@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:kollywood_app/components/boardblock.dart';
-import 'package:flutter_typeahead/flutter_typeahead.dart';
+import 'package:kollywood_app/pages/answer.dart';
+// import 'package:kollywood_app/components/suggestions.dart';
 
 class Question extends StatefulWidget {
   final String lobbyCode;
@@ -11,12 +12,22 @@ class Question extends StatefulWidget {
 }
 
 class _QuestionState extends State<Question> {
-  Map questionSet = {};
-  final items = List.generate(
-    100,
-    (i) => '$i',
-  );
-  final TextEditingController _typeAheadController = TextEditingController();
+  var _movieSuggestionController = TextEditingController();
+  var _heroSuggestionController = TextEditingController();
+  var _heroineSuggestionController = TextEditingController();
+  var _songSuggestionController = TextEditingController();
+
+  Map<String, String> questionSet = {
+    'hero': '',
+    'heroine': '',
+    'movie': '',
+    'song': '',
+  };
+
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -27,132 +38,191 @@ class _QuestionState extends State<Question> {
       appBar: AppBar(
         title: Text(
           'SET THE QUESTION',
-          style: TextStyle(color: Colors.white54),
+          style: TextStyle(color: Colors.white),
         ),
         centerTitle: true,
-        backgroundColor: Colors.pink[600],
+        backgroundColor: Colors.transparent,
+      ),
+      floatingActionButton: FloatingActionButton(
+        child: Icon(Icons.send_sharp),
+        backgroundColor: Colors.black87,
+        onPressed: () {
+          if (questionSet['hero'].length > 1 &&
+              questionSet['heroine'].length > 1 &&
+              questionSet['movie'].length > 1 &&
+              questionSet['song'].length > 1) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => Answer(
+                  lobbyCode: widget.lobbyCode,
+                  questionSet: questionSet,
+                ),
+              ),
+            );
+          } else {
+            showDialog<void>(
+              context: context,
+              barrierDismissible: false,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  title: Text('Question Set not provided properly'),
+                  content: SingleChildScrollView(
+                    child: ListBody(
+                      children: <Widget>[
+                        Text('Provide suitable texts for the question.'),
+                        Text('Close this dialog box.')
+                      ],
+                    ),
+                  ),
+                  actions: <Widget>[
+                    TextButton(
+                      child: Text('Close'),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                  ],
+                );
+              },
+            );
+          }
+        },
       ),
       body: SingleChildScrollView(
         reverse: true,
-        child: Padding(
-          padding:
-              EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
-          child: Column(
+        child: Container(
+          color: Colors.white,
+          child: Stack(
             children: <Widget>[
-              Container(
-                child: Container(
-                  padding: EdgeInsets.symmetric(horizontal: 10, vertical: 20),
-                  child: Text(
-                    "Lobby: ${widget.lobbyCode}",
-                    style: TextStyle(
-                      fontSize: 20.0,
-                      color: Colors.pink[800],
-                    ),
-                  ),
-                ),
+              Image(
+                image: AssetImage('assets/bg.png'),
+                fit: BoxFit.cover,
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Column(
-                    children: <Widget>[
-                      BoardBlock(
-                        letter: 'A',
-                        label: 'HERO',
-                      ),
-                      BoardBlock(
-                        letter: 'B',
-                        label: 'HEROINE',
-                      ),
-                    ],
-                  ),
-                  Column(
-                    children: <Widget>[
-                      BoardBlock(
-                        letter: 'C',
-                        label: 'MOVIE',
-                      ),
-                      BoardBlock(
-                        letter: 'D',
-                        label: 'SONG',
-                      ),
-                    ],
-                  )
-                ],
-              ),
-              SizedBox(
-                width: 300,
+              Padding(
+                padding: EdgeInsets.only(
+                    bottom: MediaQuery.of(context).viewInsets.bottom),
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Padding(
-                      padding: EdgeInsets.only(top: 30.0, bottom: 30.0),
-                      child: TypeAheadField(
-                        textFieldConfiguration: TextFieldConfiguration(
-                          style: DefaultTextStyle.of(context)
-                              .style
-                              .copyWith(fontStyle: FontStyle.italic),
-                          decoration:
-                              InputDecoration(border: OutlineInputBorder()),
-                          controller: this._typeAheadController,
-                        ),
-                        suggestionsCallback: (pattern) {
-                          return items;
-                        },
-                        itemBuilder: (context, suggestion) {
-                          return ListTile(
-                            title: Text(suggestion),
-                          );
-                        },
-                        onSuggestionSelected: (suggestion) {
-                          this._typeAheadController.text = suggestion;
-                        },
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 30.0, bottom: 15.0),
-                      child: TextFormField(
-                        decoration: InputDecoration(
-                          hintText: 'Enter Hero',
-                          hintStyle: TextStyle(
-                              fontSize: 20,
-                              color: Colors.black87.withOpacity(.5)),
+                  children: <Widget>[
+                    Container(
+                      child: Container(
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                        margin: EdgeInsets.only(top: 130, bottom: 20),
+                        color: Colors.grey[100].withOpacity(.6),
+                        child: Text(
+                          "Lobby: ${widget.lobbyCode}",
+                          style: TextStyle(
+                            fontSize: 20.0,
+                            color: Colors.grey[850],
+                          ),
                         ),
                       ),
                     ),
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 15.0),
-                      child: TextFormField(
-                        decoration: InputDecoration(
-                            hintText: 'Enter Heroine',
-                            hintStyle: TextStyle(
-                                fontSize: 20,
-                                color: Colors.black87.withOpacity(.5))),
-                      ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Column(
+                          children: <Widget>[
+                            BoardBlock(
+                              letter: questionSet['hero'].length >= 1
+                                  ? questionSet['hero']
+                                      .substring(0, 1)
+                                      .toUpperCase()
+                                  : 'NaN',
+                              label: 'HERO',
+                            ),
+                            BoardBlock(
+                              letter: questionSet['heroine'].length >= 1
+                                  ? questionSet['heroine']
+                                      .substring(0, 1)
+                                      .toUpperCase()
+                                  : 'NaN',
+                              label: 'HEROINE',
+                            ),
+                          ],
+                        ),
+                        Column(
+                          children: <Widget>[
+                            BoardBlock(
+                              letter: questionSet['movie'].length >= 1
+                                  ? questionSet['movie']
+                                      .substring(0, 1)
+                                      .toUpperCase()
+                                  : 'NaN',
+                              label: 'MOVIE',
+                            ),
+                            BoardBlock(
+                              letter: questionSet['song'].length >= 1
+                                  ? questionSet['song']
+                                      .substring(0, 1)
+                                      .toUpperCase()
+                                  : 'NaN',
+                              label: 'SONG',
+                            ),
+                          ],
+                        )
+                      ],
                     ),
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 15.0),
-                      child: TextFormField(
-                        decoration: InputDecoration(
-                            hintText: 'Enter Movie',
-                            hintStyle: TextStyle(
-                                fontSize: 20,
-                                color: Colors.black87.withOpacity(.5))),
+                    SizedBox(
+                      width: 300,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          TextFormField(
+                            controller: _heroSuggestionController,
+                            onChanged: (String value) {
+                              setState(() {
+                                questionSet['hero'] = value.toLowerCase();
+                              });
+                            },
+                            decoration: const InputDecoration(
+                              hintText: 'Enter Hero',
+                              labelText: 'Hero *',
+                            ),
+                          ),
+                          TextFormField(
+                            controller: _heroineSuggestionController,
+                            onChanged: (String value) {
+                              setState(() {
+                                questionSet['heroine'] = value.toLowerCase();
+                              });
+                            },
+                            decoration: const InputDecoration(
+                              hintText: 'Enter Heroine',
+                              labelText: 'Heroine *',
+                            ),
+                          ),
+                          TextFormField(
+                            controller: _movieSuggestionController,
+                            onChanged: (String value) {
+                              setState(() {
+                                questionSet['movie'] = value.toLowerCase();
+                              });
+                            },
+                            decoration: const InputDecoration(
+                              hintText: 'Enter Movie',
+                              labelText: 'Movie *',
+                            ),
+                          ),
+                          TextFormField(
+                            controller: _songSuggestionController,
+                            onChanged: (String value) {
+                              setState(() {
+                                questionSet['song'] = value.toLowerCase();
+                              });
+                            },
+                            decoration: const InputDecoration(
+                              hintText: 'Enter Song',
+                              labelText: 'Song *',
+                            ),
+                          ),
+                        ],
                       ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 30.0),
-                      child: TextFormField(
-                        decoration: InputDecoration(
-                            hintText: 'Enter Song',
-                            hintStyle: TextStyle(
-                                fontSize: 20,
-                                color: Colors.black87.withOpacity(.5))),
-                      ),
-                    ),
+                    )
                   ],
                 ),
-              )
+              ),
             ],
           ),
         ),
